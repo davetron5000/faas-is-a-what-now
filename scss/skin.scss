@@ -1,0 +1,127 @@
+body {
+  background: $paper;
+  color: $ink;
+
+  header {
+    background: $ink;
+    color: $paper;
+  }
+  footer {
+    border-top: solid thin lighten($ink,50%);
+  }
+}
+pre {
+  background: $ink;
+  color: $paper;
+  border-radius: $sz4;
+}
+
+img {
+  background: white;
+  -webkit-box-shadow: $sz5/4 $sz5/4 $sz4 0px rgba(0,0,0,0.75);
+     -moz-box-shadow: $sz5/4 $sz5/4 $sz4 0px rgba(0,0,0,0.75);
+          box-shadow: $sz5/4 $sz5/4 $sz4 0px rgba(0,0,0,0.75);
+}
+
+.chapter {
+  &::after {
+    content: "§";
+    display: block;
+    text-align: center;
+  }
+  a {
+    text-decoration: none;
+    padding: $sz5;
+    margin-left: -$sz5;
+    margin-right: -$sz5;
+    border-radius: $sz5;
+    color: $ink;
+    font-weight: 200;
+    -o-transition:.5s;
+    -ms-transition:.5s;
+    -moz-transition:.5s;
+    -webkit-transition:.5s;
+    transition:.5s;
+    &::after {
+      content: "°";
+      color: $link-marker;
+    }
+    &:hover {
+      background: $link-background;
+    }
+  }
+  a.embiggen-image {
+    text-decoration: none;
+    padding: 0;
+    margin: 0;
+    color: $ink;
+    &::after {
+      content: "";
+    }
+    &:hover {
+      background: $link-background;
+    }
+  }
+  h1 {
+    &::after {
+      display: block;
+      content: "❧";
+    }
+  }
+  aside.sidebar {
+    background: darken($paper-grey,10%);
+    color: lighten($ink-light,5%);
+    @media screen and (min-width: 30em) {
+      border-radius: $sz1 $sz1 $sz3 $sz3;
+    }
+    h1 {
+      @media screen and (min-width: 30em) {
+        border-radius: $sz3 $sz3 0 0;
+      }
+      background: $ink;
+      color: $paper;
+      &::after {
+        display: none;
+      }
+    }
+    &::after {
+      text-align: right;
+      display: block;
+      content: "⁂";
+      color: lighten($ink-light,15%);
+    }
+  }
+}
+aside.toc {
+  div.toc {
+    background: darken($paper-grey,10%);
+    color: lighten($ink-light,5%);
+    border-radius: $sz4;
+  }
+  a {
+    color: $ink;
+    text-decoration: none;
+    &:hover {
+      background: #f0f0f8;
+      border-radius: 2px;
+    }
+  }
+}
+
+aside.ad {
+  background: darken($paper-grey,5%);
+  border:solid thin $ink-light;
+  border-radius: $sz4;
+
+  h3 a {
+    border-radius: $sz4;
+    border: solid thin $ink-light;
+    &:hover {
+      background: $paper;
+    }
+  }
+  .banner {
+    background: $paper;
+    border-radius: $sz4;
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "toc": [
+    {
+      "name": "index",
+      "title": "Serverless? Functions? Huh?"
+    },
+    {
+      "name": "function",
+      "title": "Functions and Events"
+    },
+    {
+      "name": "more_functions",
+      "title": "Functions to Tame Complexity"
+    },
+    {
+      "name": "only_functions",
+      "title": "Nothing but Functions"
+    }
+  ]
+}
