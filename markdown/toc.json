@@ -15,6 +15,10 @@
     {
       "name": "only_functions",
       "title": "Nothing but Functions"
+    },
+    {
+      "name": "operations",
+      "title": "Serverless Operational Concerns"
     }
   ]
 }

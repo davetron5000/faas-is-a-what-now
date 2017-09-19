@@ -133,7 +133,7 @@ document.getElementsByTagName("form")[0].submit();
 
 !STOPBG{output=true} node js/server.js
 
-If you imagine this way of working, and apply it to a large system where no one person understands how it all works, and where
+If you imagine this way of working, and apply it to a large system where no one person can understand how it all works, and where
 various teams of engineers are responsible for different business functions, this has a lot of advantages.  In our example above,
 it's actually pretty difficult to break the email-sign-up flow by adding more logic to it.  We could add many other
 functions to this flow without ever having to worry about the main flow breaking.
