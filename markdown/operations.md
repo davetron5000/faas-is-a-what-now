@@ -133,9 +133,15 @@ or request routing when examining the `saveEmail` function.
 adapter, the best email subsystem, the best HTML rendering engine for the problem at hand.  While an integrated
 web application benefits greatly from an integrated framework, our “free functions” don't, so we can use different
 libraries if it's warranted.
-* To change any given function, we just have to deploy that function.  We don't need to run a test suite of the
+* To change any given function, we only have to deploy that function.  We don't need to run a test suite of the
 entire system just to deploy a change to one component.  As long as our functions confirm to the protocol, we are
 good (this is not without downsides, which we'll get to in a later chapter).
 
+There are theoretical cost benefits, too.  Our function that renders HTML likely gets called a lot, but our function that sends
+email likely not nearly as much.  The way most Faas providers work, you only pay for when your function executes, as opposed to
+paying for server processes or virtual machines that are always on.
 
+So, a serverless architecture based on event-sourcing, hosted by a cloud Faas provider has many advantages that we've seen.  The
+programing model is attractive, the operational model is simplified, and it could cost less.  There can't be any downsides, can
+there?
 

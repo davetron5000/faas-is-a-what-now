@@ -275,14 +275,14 @@ const storeInDatabase = (params) => {
 module.exports = storeInDatabase;
 !END CREATE_FILE
 
-Lastly, we'll create a function that sends a welcome email.
+Lastly, we'll create a function that sends a welcome email (which we hand-wave over).
 
 !CREATE_FILE js/sendWelcomeEmail.js
-const Database = require("./Database.js");
 
-const sendWelcomeEmail = (emailId) => {
-  const email = Database.find(emailId);
+const sendWelcomeEmail = (data) => {
+  const email = data["email"]["data"]["email"];
   console.log(`Sending welcome email to ${email}`);
+  return email;
 }
 module.exports = sendWelcomeEmail;
 !END CREATE_FILE
@@ -345,7 +345,7 @@ We will need to modify our `Database` class to fire an event when it saves an em
 {
   "match": "    return id;",
   "insert_before": [
-    "    EventBus.fire(\"newEmailAddress\",id);"
+    "    EventBus.fire(\"newEmailAddress\",{ email: { action: \"created\", data: { id: id, email: email }}});"
   ]
 }
 !END EDIT_FILE

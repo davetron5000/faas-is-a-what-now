@@ -19,6 +19,14 @@
     {
       "name": "operations",
       "title": "Serverless Operational Concerns"
+    },
+    {
+      "name": "downsides",
+      "title": "Downsides to Functions Everywhere"
+    },
+    {
+      "name": "contract",
+      "title": "Contract-based Testing for Faas"
     }
   ]
 }

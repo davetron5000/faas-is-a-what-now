@@ -96,9 +96,9 @@ singed up for our site.  We could do this without changing the basic logic that 
 !CREATE_FILE js/emailDeepLearning.js
 const Database = require("./Database.js");
 
-const addEmailToDataWarehouse = (emailId) => {
-  const email = Database.find(emailId);
-  console.log(`Storing ${email} in our data warehouse for some deep learning!`);
+const addEmailToDataWarehouse = (data) => {
+  const emailData = data["email"]["data"];
+  console.log(`Storing ${JSON.stringify(emailData)} in our data warehouse for some deep learning!`);
 }
 module.exports = addEmailToDataWarehouse;
 !END CREATE_FILE
