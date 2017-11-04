@@ -59,7 +59,11 @@ message.
 }
 !END EDIT_FILE
 
-Now, we'll replace `js/app.js` with a version that handles the POST.  I promise this is leading to something.
+Now, we'll replace `js/app.js` with a version that handles the POST. Because we'll need more code, let's break it up into some functions.  We'll create a functional called `renderPage` that accepts the `write` function `js/server.js` gives us, as well as the parsed params (which could be `null`).  This function's job is to replace the HTML template with dynamic data, so it'll look at `params` and, if there is a `params.email`, replace the newly-introduced `##email##` placeholder with that email.  Otherwise, it replaces it with the empty string.
+
+We'll *also* make a function called `emailSignup` that, currently, just logs that someone has requested a signup, and then defers
+to `renderPage`.  At the very end we'll call either `emailSignup` or `renderPage`, depending on if we have a parsed body from
+`js/server.js` or not.
 
 !CREATE_FILE js/app.js
 const fs   = require("fs");
@@ -96,9 +100,6 @@ module.exports = (write,body) => {
 }
 !END CREATE_FILE
 
-It's a bit of a slog, but `renderPage` is our rendering function, and `emailSignup` handles the POST, which is just outputting to
-the console for now.
-
 If we start our server, the app is still working, but rendering our sign-up form:
 
 !SHBG{pause=2} node js/server.js
@@ -114,7 +115,7 @@ document.getElementsByTagName("form")[0].submit();
 
 !STOPBG node js/server.js
 
-OK, so what has this to do with events and function?  One more step before we're done.  We want to store the email address in a database and then fire off a background job to send a welcome email to that address.
+OK, so what has this to do with events and functions?  One more step before we're done.  We want to store the email address in a database and then fire off a background job to send a welcome email to that address.
 
 We'll fake this out by creating some classes.  First, we'll make a very cheesy database:
 
@@ -247,6 +248,11 @@ const index = fs.readFileSync(
       path.resolve(__dirname,"..","html","index.html")
     ).toString();
 
+/*
+ * @param params an object expected to have two keys:
+ *        - write - the function passed by js/server.js
+ *        - body - the parsed body of the request (optional).
+ */
 const renderPage = (params) => {
   var html = index.replace("##date##",(new Date()).toString()).
     replace("##count##",Math.floor(Math.random() * 1000));
@@ -262,10 +268,15 @@ const renderPage = (params) => {
 module.exports = renderPage;
 !END CREATE_FILE
 
-Next, we need one last function to store the email in the database.
+Next, we need a function to store the email in the database.  We'll have it take a general `params` object as well:
 
 !CREATE_FILE js/storeInDatabase.js
 const Database      = require("./Database.js");
+/*
+ * @param params - an object expected to have the key `body`, which
+ *                 is itself an object expected to have the key
+ *                 `email`.
+ */
 const storeInDatabase = (params) => {
   const email = params.body.email;
   console.log(`Signing up ${email}`);
@@ -275,10 +286,17 @@ const storeInDatabase = (params) => {
 module.exports = storeInDatabase;
 !END CREATE_FILE
 
-Lastly, we'll create a function that sends a welcome email (which we hand-wave over).
+Lastly, we'll create a function that sends a welcome email (which we hand-wave over).  This takes a seemingly convoluted `data`
+argument that we'll explain in a bit.
 
 !CREATE_FILE js/sendWelcomeEmail.js
 
+/*
+ * data - an object expected to have a key `email`, that
+ *        should be an object with the key `data`, that
+ *        should be an object with the key `email` (I know),
+ *        that should be an email address.
+ */
 const sendWelcomeEmail = (data) => {
   const email = data["email"]["data"]["email"];
   console.log(`Sending welcome email to ${email}`);
@@ -299,10 +317,10 @@ class EventBus {
   /**
    * Register a listener with an arbitrary event.
    *
-   * @param {string} eventName - the name of the event.  Can be anything.
-   * @param {function} listener - the event listener.  Should be a function
-   *                              and will be given whatever
-   *                              params were given to fire
+   * @param eventName - the name of the event.  Can be anything.
+   * @param listener  - the event listener.  Should be a
+   *                    function and will be given whatever
+   *                    params were given to fire
    */
   register(eventName,listener) {
     if (!this.eventListeners[eventName]) {
@@ -313,9 +331,9 @@ class EventBus {
   /**
    * Fire an event and notify any listeners.
 
-   * @param {string} eventName - name of the event.
-   * @param {*} params - an object representing the parameters
-                         relevant to the event.
+   * @param eventName - name of the event.
+   * @param params    - an object representing the parameters
+                        relevant to the event.
    */
   fire(eventName,params) {
     if (!this.eventListeners[eventName]) {
@@ -332,7 +350,37 @@ module.exports = (new EventBus());
 
 This isn't anything special, it just stores listeners on events and provides a way to fire events to notify those listeners.
 
-We will need to modify our `Database` class to fire an event when it saves an email.
+Part of making this all come together as events is to have each piece of the app fire relevant events when interesting things
+happen.  We want our `Database` to do this whenever it saves an email.  This is where we see why the `data` parameter is so
+complex.  We're trying to make a generic event here, that looks like so:
+
+```json
+{
+  "«table name»": {
+    "action": "«action name, e.g. created»",
+    "data": {
+      "«some field in the DB»": "«its value»",
+      "«some other field»": "«its value»"
+    }
+  }
+}
+```
+
+In our case, the data that goes with the event looks like this:
+
+```json
+{
+  "email": {
+    "action": "created",
+    "data": {
+      "id": 42,
+      "email": "dave@example.com"
+    }
+  }
+}
+```
+
+Here are the code changes to make that happen:
 
 !EDIT_FILE js/Database.js /* */
 {
@@ -350,7 +398,9 @@ We will need to modify our `Database` class to fire an event when it saves an em
 }
 !END EDIT_FILE
 
-With these pieces, `js/app.js` becomes not much more than configuration:
+With these pieces, `js/app.js` becomes not much more than configuration.  We need to register the functions we just created as
+receivers for some events.  One event is `newEmailAddress`, which we have the `Database` firing.  The other two events we'll fir
+inside `js/app.js` as well:
 
 !CREATE_FILE js/app.js
 const EventBus         = require("./EventBus.js");
@@ -403,11 +453,12 @@ mechanically derived.
 
 So, what about serverless architecture and FaaS?
 
-## What if you don't owne orchestration?
+## What if you didn't have to own the orchestration code?
 
 When deploying a system that runs inside a web server like Node, or even a more sophisticated framework like Ruby on Rails, you
 still end up with a lot of what is essentially configuration and orchestration—getting all the little pieces to work together.
 
-In our event-based system that has gone away.  We have two bits of code (in `js/server.js` and `js/app.js`) that do nothing but
-assemble our app together.  What if, instead of having to write that plumbing ourselves, it was given to us by, say, a cloud
-services provider?
+In the app we've created, `js/server.js` and `EventBus` are the orchestration, and `js/app.js` is
+just configuration—what events are wired to what services.  What if we didn't have to directly manage this?  What if the
+orchestration was provided by a cloud services provider, and we gave *them* our configuration (instead of writing it ourselves)?
+

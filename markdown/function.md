@@ -7,7 +7,7 @@ First, let's create an HTML file to serve up.  We'll put it in `html/` in our wo
 !SH mkdir html
 
 Our HTML will have some dynamic elements to it, just so we can see that actually serving it is having an effect and we aren't
-just dumping a static page.  In this case, we'll invent a simple templating syntaxing using hashes:
+just dumping a static page.  In this case, we'll invent a simple templating syntax using hashes:
 
 !CREATE_FILE html/index.html
 <!DOCTYPE html>
@@ -116,7 +116,22 @@ module.exports = (write) => {
 
 Instead of returning a string to render, we'll accept a function we can call that will render that for us.  This will become handy later, so trust me for now that this makes sense.
 
-Now, `js/server.js` is simpler:
+Now, `js/server.js` is simpler, although we do need to create a more complex `write` function.  The `res` object passed into the
+function we give `createServer` requires that we call `end` on it after all other data has been sent.  Since sending the data is
+now happening inside `app.js`, we need to make sure we let *that* happen before calling `end`.
+
+Fortunately, the `write` function on `res` takes a callback.  This callback is called when the write is complete, so *our*
+`write` function can take the data from `app.js`, write it using Node's `write` function, and then call `end` in the callback:
+
+```javascript
+const write = (allData) => {
+  res.write(allData, () => {
+    res.end();
+  });
+}
+```
+
+Whew!  Putting it together, `js/service.js` is entirely generic boilerplate:
 
 !CREATE_FILE js/server.js
 const http = require("http");
@@ -126,23 +141,22 @@ const hostname = "127.0.0.1";
 const port     = 3000;
 
 const server = http.createServer((req, res) => {
+
   const write = (allData) => {
     res.write(allData, () => {
       res.end();
     });
   }
+
   res.statusCode = 200;
   res.setHeader("Content-Type", "text/html");
-  app(write);
+  app(write); // <-- the only important thing
 });
 
 server.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });
 !END CREATE_FILE
-
-The reason `write` is so complex is because everything in Node is asynchronous, so we need to be sure to call `end` *only* when all writes are complete.  By creating our own `write` function, we ensure that.  This complexity will
-make sense later, trust me.
 
 If we re-run our server:
 
@@ -155,7 +169,7 @@ and navigate to `http://localhost:3000`, everything is still working:
 !STOPBG node js/server.js
 
 The contents of `js/server.js` are pretty generic.  They don't have anything to do with our use-case of serving up a dynamic web
-page, and we could use `js/server.js` with pretty much any function that returns a string.
+page, and we could use `js/server.js` with pretty much any function.
 
 Meanwhile, *our* code has no knowledge of the fact that it's run in a web server.  It's just rendering strings.  So far, this is basic separation of concerns.
 
@@ -169,13 +183,12 @@ good.
 
 ## Protocols
 
-A _protocol_ is an agreement between code that calls our code and our code.  Currently, the protocol we've established is that
-our module exports a function that takes a function it can use to render text to the caller.
+A _protocol_ is an agreement between our code and the code that calls it.  Currently, the protocol we've established is that
+our module exports a function that takes a function that can render text to the caller.
 
-We can write any number of such modules, and as long as they export a no-arg function that returns an HTML string, `js/server.js`
-can execute them.
+We can write any number of such modules, and as long as they conform to this protocol, they can be replaced in `js/server.js`.
 
-To demonstrate this, let's replace `js/app.js` entirely:
+Let's change `js/app.js` to do something totally different—render the date:
 
 !CREATE_FILE js/app.js
 module.exports = (write) => {
@@ -197,5 +210,6 @@ Hopefully, you're starting to see where we're going.  If we had a programming mo
 applications, but where we  *only* had to write code specific to our problem domain, that would result in a lot less code with
 fewer tests.  We'd be able to ship more quickly.
 
-*But*, this still just looks like a web framework.  This doesn't seem that revolutionary, and I'd agree.  Let's expand the scope
+*But*, this still just looks like a web framework.  For example, we could replace a lot of `js/server.js` by using
+[Express](https://expressjs.com). So far, we haven't seen anything revolutionary. Let's expand the scope
 of our application beyond serving web pages and see where that takes us.

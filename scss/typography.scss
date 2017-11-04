@@ -3,7 +3,7 @@ $system-font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helve
 $system-monospace: courier, monospace;
 
 // Sizing
-$chars-per-line: 70;
+$chars-per-line: 75;
 
 // Modular Font Scale
 /*
@@ -26,7 +26,7 @@ $f13: 4.250px;
 
 $body-font-size: $f7;
 
-$line-height: 1.4;
+$line-height: 1.6;
 $text-width: $body-font-size * $chars-per-line / 2;
 
 // Some sizes
@@ -37,13 +37,13 @@ $sz4: $body-font-size * $line-height / 4; //  6.30px
 $sz5: $body-font-size * $line-height / 8; //  3.15px
 
 @mixin header-font {
-  font-family: avenir next,avenir,sans-serif;
+  font-family: helvetica neue,helvetica,sans-serif;
   line-height: $line-height;
   text-rendering: optimizeLegibility;
 }
 @mixin body-font {
   font-size: $body-font-size;
-  font-family: "Baskerville", "Georgia", "Times", serif;
+  font-family: georgia,serif;
   font-weight: 200;
   line-height: $line-height;
   text-rendering: optimizeLegibility;
@@ -199,7 +199,9 @@ blockquote {
 .chapter {
   h1 {
     @include header-font;
-    margin-top: 0;
+    color: white;
+    margin-top: $sz2;
+    margin-bottom: $sz2;
     font-size: $f4;
     font-weight: 100;
     text-transform: uppercase;
@@ -207,19 +209,20 @@ blockquote {
   }
   h2 {
     @include header-font;
+    color: white;
     margin-top: $sz1;
     font-size: $f5;
     font-weight: 400;
-    letter-spacing: -($sz5 / 2);
   }
   h3 {
     @include header-font;
+    color: white;
     font-size: $f6;
     font-weight: 100;
   }
   a.embiggen-image small {
     @include header-font;
-    $font-size: $f9;
+    font-size: $f9;
   }
 }
 

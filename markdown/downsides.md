@@ -7,8 +7,16 @@ run this in our development environment. Frameworks like [the Serverless Framewo
 this, but this is not without complexity.  Especially if you have years of battle-hardened experience writing and deploying more
 conventional web apps—you've got a learning curve ahead, and it's not gentle.
 
-Even if we hand-wave and say that a more realitic and complex system won't suffer from any more complexity than a traditional one
-(or might be simpler), there's another question which is how to test all this?
+It's also not clear that a moderately involved system wouldn't also be complex.  Ideally, new features (or changes) could be
+localized to one or a few functions.  This would only be true if you'd made the right choices around what functions did what, and
+set proper system boundaries.  In the case where you didn't, you would end up needing to make a lot of changes in a lot of
+functions.
+
+In a monolithic system, development tools and workflows make this as simple as can be expected.  Be it text editor or IDE,
+navigating around a codebase is a well-solved problem.  When your codebase is now spread over many disparate functions,
+developer workflows will have to change, and might be generally more difficult.
+
+Of course, this brings us to the biggest downside, which is…how are we supposed to test all this?
 
 ## Unit Tests Don't Always Inspire Confidence
 
@@ -155,7 +163,7 @@ it.
 
 The way this is solved in a microservices-based architecture is to use _consumer-driven-contracts_.  A consumer-driven contract
 allows the consumer of a microservice to record assertions about how it expects that service to behave.  For example, we might
-send a `GET` request to `payments.example.com/credit_cards/42` to get user 42's payment details and expect some JSON back.  As a consumer of `payments.example.com`, we'd record that when we submit that request, we expect a certain response that matches a certain format:
+send a `GET` request to `payments.example.com/credit_cards/42` to get user 42's payment details and expect some JSON back.  As a consumer of `payments.example.com`, we'd record that, when we submit that request, we expect a certain response that matches a certain format:
 
 ```json
 {
@@ -178,7 +186,7 @@ send a `GET` request to `payments.example.com/credit_cards/42` to get user 42's 
 We then *publish* this expectation to the service itself.  Call this a _contract_.  The service takes this contract and executes it *against itself*.  If it behaves as the consumer expects, we have confidence that these two systems are talking to each other
 properly and that they will work in production.
 
-Consumer-drive contracts aren't a household name with developers, but the concept is well established and tooling exists to set
+Consumer-driven contracts aren't a household name with developers, but the concept is well established and tooling exists to set
 this up without a lot of trouble.
 
 This concept is non-existent for event-sourced systems like the one we've built.

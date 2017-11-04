@@ -8,6 +8,9 @@ body {
   }
   footer {
     border-top: solid thin lighten($ink,50%);
+    a {
+      color: $link-marker;
+    }
   }
 }
 pre {
@@ -25,7 +28,7 @@ img {
 
 .chapter {
   &::after {
-    content: "§";
+    content: "~";
     display: block;
     text-align: center;
   }
@@ -65,7 +68,8 @@ img {
   h1 {
     &::after {
       display: block;
-      content: "❧";
+      font-size: $f7;
+      content: "✻ ✻ ✻";
     }
   }
   aside.sidebar {
@@ -102,7 +106,7 @@ aside.toc {
     color: $ink;
     text-decoration: none;
     &:hover {
-      background: #f0f0f8;
+      background: #101018;
       border-radius: 2px;
     }
   }

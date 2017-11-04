@@ -41,6 +41,8 @@ digraph faas {
 }
 !END GRAPHVIZ
 
+<aside class="pullquote">We are responsible for the operations of that application <em>including the framework and library code</em></aside>
+
 I've been pedantic about framework-provided subsystems for a reason.  Because we are asking our hosting provider
 to run our entire application, we are responsible for the operations of that application _including the framework
 and library code_.  Our hosting provider doesn't care that some open source team maintains our database adapter—we
@@ -49,7 +51,7 @@ are the ones running it in production.
 If we compare that to our functions-as-unit-of-deploy, there's less stuff to manage, and each function has a
 smaller footprint.
 
-Consider our tiny application implemented in an MVC-style web framework.  We would need every piece of the
+Consider if our tiny application was implemented as an MVC-style web framework.  We would need every piece of the
 framework as described in the above diagram, and to have visibility into its behavior, we need to bring a lot of
 pieces together.  If you've used an Application Performance Monitoring (APM) tool like New Relic, you know how
 complex this can be, especially if your web framework or programming language doesn't have a lot of hooks for it
@@ -61,14 +63,13 @@ You end up having to litter your code with stuff like this:
 db.createObject(
   // "nr" is the custom tracing library
   nr.createTracer('db:createObject', function (err, result) {
-      if (util.handleError(err, res)) {
-        return
-      }
-      res.write(JSON.stringify(result.rows[0].id))
-      res.write('\n')
-      res.end()
+    if (util.handleError(err, res)) {
+      return
     }
-  )
+    res.write(JSON.stringify(result.rows[0].id))
+    res.write('\n')
+    res.end()
+  })
 )
 ```
 

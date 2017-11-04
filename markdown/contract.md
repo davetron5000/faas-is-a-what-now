@@ -1,5 +1,5 @@
 A big downside of designing a distributed system built on Faas it that it's hard to execute system tests or to even test that
-various functions are working together properly.  In a microservices world, we can use consumer-drive contracts, which we talked
+various functions are working together properly.  In a microservices world, we can use consumer-driven contracts, which we talked
 about in the last chapter.
 
 What is the analog in our event-sourced, functions-as-a-service, serverless world?
@@ -61,7 +61,10 @@ const EventTestCatalog = {
 
 const testMessagesPath = path.resolve(__dirname,"test_messages");
 fs.readdirSync(testMessagesPath).forEach(file => {
-  const message = JSON.parse(fs.readFileSync(path.resolve(testMessagesPath,file)));
+  const message = JSON.parse(
+                    fs.readFileSync(
+                      path.resolve(testMessagesPath,file)
+                    ));
   const eventName = file.replace(/\.json$/,"");
   EventTestCatalog.events[eventName] = message;
 });
@@ -243,7 +246,7 @@ If we re-run `js/sendWelcomeEmailTest.js`, it will read this file, and should st
 
 !SH node js/sendWelcomeEmailTest.js
 
-So far so good.   Now, let's say the database changes its payload format for the messages, buy changing the field `email` to
+So far so good.   Now, let's say the database changes its payload format for the messages, by changing the field `email` to
 `emailAddress`:
 
 !EDIT_FILE js/Database.js /* */
@@ -275,7 +278,7 @@ What this demonstrates is that it's possible to create a system based on events 
 how we write tests, we can achieve the level of confidence we'd get from an end-to-end test by keeping track of the messages and
 expectations of the various functions and what they do.
 
-You could imagine taking the above concept to the next level by having a central database of messaages, and a registry of
+You could imagine taking the above concept to the next level by having a central database of messages, and a registry of
 functions that send those messages along with those that expect to receive them.  It would then be possible to examine this
 registory to see if anything broke.  For example, if we'd made the change to `Database` above under such a sytem, we could
 include, as part of our CI process, a step that asks the central registory “Will this updated payload break any registered
@@ -283,3 +286,7 @@ consumers?”.
 
 Such a system could also monitor *all* messages and, armed with the knowledge of who is expecting what from whom, indicate if an
 expected message stopped being sent, or if no one was registered to receive a particular message.
+
+Neat!  So, we should all do serverless now?
+
+

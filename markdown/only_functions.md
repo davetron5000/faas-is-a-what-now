@@ -1,5 +1,6 @@
 Let's keep going with our budding event-based architecture.  Suppose that both `js/server.js` and the event bus are provided to
-us for us to use.  We could then imagine that our entire sytem is describable by a configuration file:
+us for us by our cloud services provider.  Suppose our provider guarantees it will fire a `get` or `post` event when someone
+makes an HTTP request to a server it's running on our behalf.  We could then imagine that our entire system is describable by a configuration file:
 
 !CREATE_FILE js/app.js
 const renderPage       = require("./renderPage.js");
@@ -7,27 +8,27 @@ const storeInDatabase  = require("./storeInDatabase.js");
 const sendWelcomeEmail = require("./sendWelcomeEmail.js");
 
 module.exports = {
-  // This means "on the emailSignup event, fire both
-  // storeInDatabase and renderPage
+  "get": "pageRequested", // fire pageRequested if get is fired
+  "post": "emailSignup",  // fire emailSignup is post is fired
   "emailSignup": [
-    storeInDatabase,
-    renderPage,
+    storeInDatabase, // if emailSignup is fired, call storeInDatabase
+    renderPage,      // if emailSignup is fired, ALSO call renderPage
   ],
   "pageRequested": [
     renderPage
   ],
   "newEmailAddress": [
     sendWelcomeEmail
-  ],
-  // This means "re-fire the post event as emailSignup"
-  "post": "emailSignup",
-  // This means "re-fire the vet event as pageRequested"
-  "get": "pageRequested"
+  ]
 }
 !END CREATE_FILE
 
-To make this work, we beef up `js/server.js` (remember that this isn't code we'd have to write ourselves, so don't worry too
-much about it—it's here to we can see our code working):
+Although our cloud services provider would be capable of reading `js/app.js` to run our system, we aren't using one in these
+examples, so let's modify `js/server.js` to handle this new configuration format.  Remember, this isn't code you would normally
+write, but it's important to see these examples running.
+
+We'll keep it as simple as we can.  We need to iterate over the structure exported by `js/app.js` and wire up all the events and
+listeners.  We then need our web server to fire the `get` and `post` events, instead of calling `app(write)`.
 
 !EDIT_FILE js/server.js /* */
 {
@@ -91,11 +92,9 @@ If we supposed that our cloud services provider can:
 
 We could completely describe a highly complex system using just events and functions.  We could also enhance this system in a
 more safe way.  For example, suppose our data science team wanted to do some analysis on the domain names of email addresses
-singed up for our site.  We could do this without changing the basic logic that we have now by configuring a new function:
+signed up for our site.  We could do this without changing the basic logic that we have now by configuring a new function:
 
 !CREATE_FILE js/emailDeepLearning.js
-const Database = require("./Database.js");
-
 const addEmailToDataWarehouse = (data) => {
   const emailData = data["email"]["data"];
   console.log(`Storing ${JSON.stringify(emailData)} in our data warehouse for some deep learning!`);
@@ -132,6 +131,11 @@ document.getElementsByTagName("form")[0].submit();
 !END DO_AND_SCREENSHOT
 
 !STOPBG{output=true} node js/server.js
+
+It's also worth pointing out that the traditional way to do Business Intelligence like this is to allow the data scientists to
+reach into our databases directly.  This couples them to our schema and presents operational challenges (e.g. if they run an
+inefficient query against our production system).  By using events, they are totally decoupled and we can evolve our systems
+independently—as long as we continue to send the messages in the right way (which we'll talk about more in a few chapters).
 
 If you imagine this way of working, and apply it to a large system where no one person can understand how it all works, and where
 various teams of engineers are responsible for different business functions, this has a lot of advantages.  In our example above,

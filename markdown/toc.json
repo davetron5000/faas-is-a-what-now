@@ -2,8 +2,7 @@
   "toc": [
     {
       "name": "index",
-      "title": "Serverless? Functions? Huh?"
-    },
+      "title": "Serverless? Functions? Huh?" },
     {
       "name": "function",
       "title": "Functions and Events"
@@ -27,6 +26,10 @@
     {
       "name": "contract",
       "title": "Contract-based Testing for Faas"
+    },
+    {
+      "name": "conclusion",
+      "title": "Conclusion"
     }
   ]
 }
