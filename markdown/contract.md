@@ -4,8 +4,8 @@ about in the last chapter.
 
 What is the analog in our event-sourced, functions-as-a-service, serverless world?
 
-Since all activity is based on messages, the way we'd test this is to use these messages as our test input, and then to assure
-that the messages actually are produced in the way our code thinks.
+Since all activity is based on messages, and our functions are triggered based on messages, we'd use bonafide messages as test
+inputs.  For functions that also *send* messages, we'd like to capture those messages to use as test data.
 
 In the previous section we broke our system by changing the format of the message the `renderPage` function received.
 
@@ -14,8 +14,8 @@ tests, rather than hand-coding them.
 
 ## Output of One is Input to Another
 
-The problem with our system as it stands is that `renderPage` is expecting a message that won't be sent. If we'd been more
-disciplined about our test data from the start, we might not have caused this problem.
+The problem with our system as it stands is that `renderPage` is expecting a message that won't be sent. We inadvertently
+invented a message that makes our tests pass, but that doesn't exist in production.
 
 Let's create an event catalog that describes all the events we know about.  We'll create a directory named `js/test_messages` and
 place one file in there for each event.  The contents of the file will be an example event.
@@ -79,7 +79,7 @@ module.exports = EventTestCatalog;
 Now that we've created some canonical message bodies for our messages outside of any given function implementation, let's rewrite
 `js/renderPageTest.js` to use these messages as input.
 
-Because  `renderPage` is configured to handle both `pageRequested` and `emailSignup`, we'll execute our tests twice, one for each.
+Because  `renderPage` is configured to receive both `pageRequested` and `emailSignup`, we'll execute our tests twice, one for each.
 
 !CREATE_FILE js/renderPageTest.js
 const renderPage = require("./renderPage.js")
@@ -98,20 +98,16 @@ events.forEach( (eventName) => {
     testMessage.write = write;
     renderPage(testMessage);
 
-    if (stringWritten.match(/\<strong\>\d+ startups/)) {
-      if (stringWritten.match(/As of \<strong\>/)) {
-        if (eventName === "emailSignup") {
-          if (stringWritten.indexOf("Thanks pat@example.com") === -1) {
-            throw "couldn't find 'Thanks pat@example.com' on the page";
-          }
-        }
-      }
-      else {
-        throw "could not find date";
-      }
-    }
-    else {
+    if (!stringWritten.match(/\<strong\>\d+ startups/)) {
       throw "could not find count";
+    }
+    if (!stringWritten.match(/As of \<strong\>/)) {
+      throw "could not find date";
+    }
+    if (eventName === "emailSignup") {
+      if (stringWritten.indexOf("Thanks pat@example.com") === -1) {
+        throw "couldn't find 'Thanks pat@example.com' on the page";
+      }
     }
     console.log(`✅ given ${eventName}, renderPage is good`);
   }
@@ -128,8 +124,7 @@ Now, when we run our test, we get a failure:
 We can see that our code works for the `pageRequested` event, but not for the `emailSignup` one.  Nice! This gives us a better
 idea of where things are broken.
 
-A brief investigation shows that we're expecting `emailSignup` and not `email`, so we can make the test pass by fixing the
-`renderPage` function:
+A brief investigation shows that we're expecting the key `emailSignup` and not the key `email`, so we can make the test pass by fixing the `renderPage` function to use the actual key that would be used in production:
 
 !EDIT_FILE js/renderPage.js /* */
 {
@@ -155,9 +150,10 @@ What does this mean?
 ## Messages as Integration Test Data
 
 This means that if our functions always take messages, and we clearly document the sorts of messages they accept, we can use
-actual messages as test input to drive our functions.
+actual messages as test input to drive our functions.  Meaning: our test data is unlikely to be wrong, so the behavior of our
+functions *given* that data will be an accurate portrayal of how they will work in production.
 
-It *also* means that we can record any messages *sent* by our code to feed into this centralized system.  Consider
+It *also* means that we can record any messages *sent* by our code to use as test data for other functions.  Consider
 `sendWelcomeEmail`.  It accepts a somewhat complex structure as input.  As we did in `renderPageTest.js`, let's remove the
 hard-coded test data and grab a message from our  `EventTestCatalog`:
 

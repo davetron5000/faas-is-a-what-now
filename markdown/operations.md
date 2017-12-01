@@ -1,9 +1,9 @@
-At this point, we have a system that exemplifies a functions-only, event-sourced architecture.  We can see the advantages in separating plumbing, like routing web requests, from our business logic.  If we assume that our cloud
-service provider (like AWS) handles the plumbing and event-routing for us, that means that the thing we deploy to production is a bunch of functions that adopt a protocol.  Our cloud provider will manage running them for us.
+At this point, we have a system that exemplifies a functions-only, event-sourced architecture.  We can see the advantages in separating plumbing (like routing web requests) from our business logic.  If we assume that our cloud
+service provider (like AWS) handles that plumbing and event-routing for us, that means that the thing we deploy to production is a bunch of functions that adopt a protocol.  Our cloud provider will be in charge of making them execute.
 
-This can make our lives much simpler when it comes to managing these functions in production.
+We've seen some benefits from a system design perspective, but this also has great _operational_ benefits.
 
-In a typical MVC-style web app, the unit of deploy is an entire application and we're expected to manage all parts of it, including what the framework provides.
+In a typical MVC-style web app, the unit of deploy is an entire application and we're expected to manage all parts of it, including what the framework provides.  Below is the architecture of such a system, with `«framework»` denoting parts of the framework we didn't write, but are running, and `«managed»` denoting components our cloud provider handles.  Anything not `«managed»` is our responsibility, even if we didn't write it:
 
 !GRAPHVIZ mvc_app.png "Architecture of an MVC-style web app:
 digraph faas {
@@ -46,15 +46,14 @@ digraph faas {
 I've been pedantic about framework-provided subsystems for a reason.  Because we are asking our hosting provider
 to run our entire application, we are responsible for the operations of that application _including the framework
 and library code_.  Our hosting provider doesn't care that some open source team maintains our database adapter—we
-are the ones running it in production.
+are the ones choosing to run it in production.
 
 If we compare that to our functions-as-unit-of-deploy, there's less stuff to manage, and each function has a
 smaller footprint.
 
-Consider if our tiny application was implemented as an MVC-style web framework.  We would need every piece of the
-framework as described in the above diagram, and to have visibility into its behavior, we need to bring a lot of
-pieces together.  If you've used an Application Performance Monitoring (APM) tool like New Relic, you know how
-complex this can be, especially if your web framework or programming language doesn't have a lot of hooks for it
+Consider if our tiny application was implemented as an MVC-style web framework.  We would need to have visibility into the
+behavior of every piece of the framework as described in the above diagram. To understand how our application performs, we have
+to examine both the our code and the framework code.  If you've used an Application Performance Monitoring (APM) tool like New Relic, you know how complex this can be, especially if your web framework or programming language doesn't have a lot of hooks for it
 to instrument.
 
 You end up having to litter your code with stuff like this:
@@ -73,7 +72,8 @@ db.createObject(
 )
 ```
 
-Deployed as a bunch of managed free functions, we likely don't need any of that.
+When we design our system as functions responding to events, all of which is managed by the cloud services provider, it gets
+simpler and we don't need very much custom tracing junk:
 
 !GRAPHVIZ function_architecture.png "Our system as functions"
 digraph faas {
@@ -86,19 +86,19 @@ digraph faas {
 
   subgraph cluster_saveEmail {
     fontname="Courier"
-    label="ƒ saveEmail()"
+    label="ƛ saveEmail()"
     SaveEmail
     DatabaseAdapter
   }
   subgraph cluster_sendEmail {
     fontname="Courier"
-    label="ƒ sendEmail()"
+    label="ƛ sendEmail()"
     SendEmail
     Mailer
   }
   subgraph cluster_renderHTML {
     fontname="Courier"
-    label="ƒ renderHTML()"
+    label="ƛ renderHTML()"
     RenderHTML
   }
   Database        [ label="RDBMS\n«managed»"           shape="box3d"]

@@ -1,7 +1,7 @@
 PATH
   remote: ../bookdown
   specs:
-    bookdown (0.0.1)
+    bookdown (0.1.0)
       methadone
       redcarpet
       sass
@@ -33,4 +33,4 @@ DEPENDENCIES
   sass
 
 BUNDLED WITH
-   1.15.1
+   1.15.4

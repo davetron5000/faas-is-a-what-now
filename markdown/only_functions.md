@@ -23,12 +23,11 @@ module.exports = {
 }
 !END CREATE_FILE
 
-Although our cloud services provider would be capable of reading `js/app.js` to run our system, we aren't using one in these
-examples, so let's modify `js/server.js` to handle this new configuration format.  Remember, this isn't code you would normally
-write, but it's important to see these examples running.
+To keep our example actually executable locally, we'll modify `js/servier.js` to read our new `js/app.js`.  Just remember, the
+idea is that our cloud services provider would handle this plumbing and we'd simply provide `js/app.js`, so bear with me.
 
-We'll keep it as simple as we can.  We need to iterate over the structure exported by `js/app.js` and wire up all the events and
-listeners.  We then need our web server to fire the `get` and `post` events, instead of calling `app(write)`.
+To mimic what our cloud services provider would do, we'll iterate over the configuration from `js/app.js` and connect events and
+listeners and firing those events to the listeners at the right time.
 
 !EDIT_FILE js/server.js /* */
 {
@@ -84,15 +83,20 @@ Our log messages prove that this is happening:
 
 !STOPBG{output=true} node js/server.js
 
-If we supposed that our cloud services provider can:
+We are now simulating events that a cloud services provider like AWS would fire, including:
 
-* Send events for HTTP requests
-* Send events for infrastructure events like databases being modified
-* Send arbitrary events we generate
+* HTTP requests
+* Infrastructure events like databases being modified
+* Custom events we generate
 
-We could completely describe a highly complex system using just events and functions.  We could also enhance this system in a
-more safe way.  For example, suppose our data science team wanted to do some analysis on the domain names of email addresses
-signed up for our site.  We could do this without changing the basic logic that we have now by configuring a new function:
+With these building blocks, we could completely describe a highly complex system using.  If you are familiar with object-oriented
+design and the definition of OO, this might seem familiar. The fundamentals of an object-oriented system are to send messages to
+objects that either do work, send more messages, or both.  That's what this is.
+
+Now, let's suppose our data science team wants to do some analysis on the domain names of email addresses
+signed up for our site.  We can make this happen without changing any of the existing code.
+
+First, we'll define a new function in `js/emailDeepLearning.js` that can be notified about new email addresses:
 
 !CREATE_FILE js/emailDeepLearning.js
 const addEmailToDataWarehouse = (data) => {
@@ -102,7 +106,7 @@ const addEmailToDataWarehouse = (data) => {
 module.exports = addEmailToDataWarehouse;
 !END CREATE_FILE
 
-And then adding that to our system's manifest:
+We can hook that into our system by adding it to the configureation in js/app.js:
 
 !EDIT_FILE js/app.js /* */
 {
@@ -120,8 +124,7 @@ And then adding that to our system's manifest:
 }
 !END EDIT_FILE
 
-And, restarting the server and trying it out, we can see that we're now applying the latest and greatest Big Data Analysis
-techniques on the newly-added email.
+And, restarting the server and trying it out, we can see that all our existing code still runs, but we're now also applying the latest and greatest Big Data Analysis techniques on the newly-added email.
 
 !SHBG{pause=2} node js/server.js
 
@@ -132,14 +135,14 @@ document.getElementsByTagName("form")[0].submit();
 
 !STOPBG{output=true} node js/server.js
 
-It's also worth pointing out that the traditional way to do Business Intelligence like this is to allow the data scientists to
-reach into our databases directly.  This couples them to our schema and presents operational challenges (e.g. if they run an
-inefficient query against our production system).  By using events, they are totally decoupled and we can evolve our systems
-independently—as long as we continue to send the messages in the right way (which we'll talk about more in a few chapters).
+Notice that we didn't change *any* of the existing code.  Also notice that our data science team got what it needed without
+having to know about the underlying database schema.  Traditionally, business intelligence teams would pull from a backup or read
+replica, which couples them to that schema, making it harder to change (or worse, affecting production workloads).  That's not
+possible here—by design.  All we have to do is make sure the schema of the *messages* stays the same (which we'll talk about more in a few chapters).
 
-If you imagine this way of working, and apply it to a large system where no one person can understand how it all works, and where
-various teams of engineers are responsible for different business functions, this has a lot of advantages.  In our example above,
-it's actually pretty difficult to break the email-sign-up flow by adding more logic to it.  We could add many other
-functions to this flow without ever having to worry about the main flow breaking.
+Now, take these concepts and think about a more realistic large system, evolved over years.  It's impossible for one person to
+understand such systems—they are too large.  If said system is built using decoupled message-based interactions, it should be
+much harder to break and thus easier to change.  We demonstrated that just now—the new function for the data science team would
+not be able to break the core functions already implemented.
 
 Aside from the programming model, there are operational advantages to this as well.

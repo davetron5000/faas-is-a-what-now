@@ -2,7 +2,7 @@ It's not lost on me that we've yet to really deploy a function or serverless app
 problem this sort of architecture solves.  I think it's this:
 
 <aside class="pullquote">You are responsible for your code, and everything else is handled by the provider</aside>
-The less code needed to run your app that you have to be directly responsible for, the better. Running an actual server means it's all on you.  Using virtual servers delegates some to your hosting provider.  Using a platform-as-a-service like Heroku delegates yet more.  A serverless architecture reduces this to what might be the absolute minimum - you are responsible for your code, and everything else is handled by the provider.  This means, if you trust your provider's competence and support, you can spend most of your time on *your* system.
+The less code needed to run your app that you have to be directly responsible for, the better. Running an actual server means it's all on you.  Using virtual servers delegates some to your hosting provider.  Using a platform-as-a-service like Heroku delegates yet more.  A serverless architecture reduces this to what might be the absolute minimum - you are responsible for your code, and everything else is handled by the provider.  This means, if you trust your provider's competence and support, you can spend most of your time and attention on *your* system and the problems it exists to solve.
 
 Event-sourcing is simply a natural consequence of writing code in this way.
 

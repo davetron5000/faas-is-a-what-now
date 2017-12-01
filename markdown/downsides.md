@@ -37,18 +37,14 @@ const write = function(string) {
 
 renderPage({ write: write, body: { email: "pat@example.com" } });
 try {
-  if (stringWritten.match(/\<strong\>\d+ startups/)) {
-    if (stringWritten.match(/As of \<strong\>/)) {
-      if (stringWritten.indexOf("Thanks pat@example.com") === -1) {
-        throw "Couldn't find 'Thanks pat@example.com' on the page";
-      }
-    }
-    else {
-      throw "Could not find date";
-    }
-  }
-  else {
+  if (!stringWritten.match(/\<strong\>\d+ startups/)) {
     throw "Could not find count";
+  }
+  if (!stringWritten.match(/As of \<strong\>/)) {
+    throw "Could not find date";
+  }
+  if (stringWritten.indexOf("Thanks pat@example.com") === -1) {
+    throw "Couldn't find 'Thanks pat@example.com' on the page";
   }
   console.log("✅ renderPage is good");
 } catch (exception) {
@@ -115,7 +111,7 @@ remember in the real world, these are provided by our cloud services provider an
 laptop to execute this entire system.  And even if we *could*, our system might be so complex that this is infeasible.
 
 We can see the downsides of this by changing `renderPage`.  Let's say instead of expecting `email` to be in the `params.body`, we
-expect `emailAddress`:
+expect the key to be `emailAddress`:
 
 !EDIT_FILE js/renderPage.js /* */
 {
@@ -195,4 +191,7 @@ This concept is non-existent for event-sourced systems like the one we've built.
 hidden under a feature flag and you arrange for test data in production, so you can deploy all changes and evaluate them against
 the real systems.  This is a total mindshift and really bleeding edge, but it's a legit way to do this.
 
-It also would slow down your feedback cycle, so let's look into this consumer-driven contract thing in the next section.
+Even if you *did* do this, it's a helluva long feedback cycle.  It would be more ideal to have something to prevent deploys that
+would break production or some way to get confidence in your code during development.
+
+Could we do consumer-driven contracts with event-sourcing and messaging?
