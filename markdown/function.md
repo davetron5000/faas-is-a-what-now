@@ -17,7 +17,7 @@ just dumping a static page.  In this case, we'll invent a simple templating synt
     <title>The Serverless Compedium</title>
   </head>
   <body>
-    <h1>The Serverless Compedium</h1>
+    <h1>The Serverless Compendium</h1>
     <h2>An exhaustive tour of ƒ-as-a-service</h2>
     <p>
       Welcome to the next level of abstraction and
