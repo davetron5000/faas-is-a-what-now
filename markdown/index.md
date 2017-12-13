@@ -18,6 +18,8 @@ The idea is that your code is a small function that does one thing, does it quic
 you can arrange for that to happen, you can run your code without managing a server of any kind.  This is why FaaS is used
 interchangeably with the word _serverless_ (not to be confused with the confusingly-named-but-seriously-points-for-calling-dibs-on-the-name [Serverless Framework](https://serverless.com), which we will only refer to by its full and capitalized name).
 
+<aside class="pullquote">The idea is that your code is a small function that does one thing, does it quickly, and doesn't require a lot of resources</aside>
+
 You might wonder how your function even gets called.  This, too, has lots of limitations and, at first, feels really strange.
 When you look at AWS' [use cases](http://docs.aws.amazon.com/lambda/latest/dg/use-cases.html), it talks about events, and FaaS or
 serverless architecture are *also* talked-about with phrases like “event sourcing”.

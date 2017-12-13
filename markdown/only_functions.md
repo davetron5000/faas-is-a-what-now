@@ -89,11 +89,18 @@ We are now simulating events that a cloud services provider like AWS would fire,
 * Infrastructure events like databases being modified
 * Custom events we generate
 
-With these building blocks, we could completely describe a highly complex system using.  If you are familiar with object-oriented
+<aside class="pullquote">The fundamentals of an object-oriented system are to send messages to objects that either do work, send more messages, or both.  That's what this is.</aside>
+
+With these building blocks, we could completely describe a highly complex system.  If you are familiar with object-oriented
 design and the definition of OO, this might seem familiar. The fundamentals of an object-oriented system are to send messages to
 objects that either do work, send more messages, or both.  That's what this is.
 
-Now, let's suppose our data science team wants to do some analysis on the domain names of email addresses
+
+Let's use these building blocks to enhance our system without changing anything that exists already.
+
+## Open for Extension, Closed for Modification
+
+Let's suppose our data science team wants to do some analysis on the domain names of email addresses
 signed up for our site.  We can make this happen without changing any of the existing code.
 
 First, we'll define a new function in `js/emailDeepLearning.js` that can be notified about new email addresses:
@@ -135,10 +142,10 @@ document.getElementsByTagName("form")[0].submit();
 
 !STOPBG{output=true} node js/server.js
 
-Notice that we didn't change *any* of the existing code.  Also notice that our data science team got what it needed without
-having to know about the underlying database schema.  Traditionally, business intelligence teams would pull from a backup or read
-replica, which couples them to that schema, making it harder to change (or worse, affecting production workloads).  That's not
-possible here—by design.  All we have to do is make sure the schema of the *messages* stays the same (which we'll talk about more in a few chapters).
+Notice that we didn't change *any* of the existing code.  If you have a better example of the oft-confused [open/closed
+principle](https://en.wikipedia.org/wiki/Open/closed_principle), I'd like to see it.
+
+Also notice that our data science team got what it needed without having to know about the underlying database schema.  Traditionally, business intelligence teams would pull from a backup or read replica, which couples them to that schema, making it harder to change (or worse, affecting production workloads).  That's not possible here—by design.  All we have to do is make sure the schema of the *messages* stays the same (which we'll talk about more in a few chapters).
 
 Now, take these concepts and think about a more realistic large system, evolved over years.  It's impossible for one person to
 understand such systems—they are too large.  If said system is built using decoupled message-based interactions, it should be

@@ -30,6 +30,10 @@
     {
       "name": "conclusion",
       "title": "Conclusion"
+    },
+    {
+      "name": "colophon",
+      "title": "Colophon"
     }
   ]
 }

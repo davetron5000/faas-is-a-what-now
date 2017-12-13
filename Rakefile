@@ -17,6 +17,7 @@ task :default do
                work_dir: "work",
     parsed_markdown_dir: "parsed_markdown",
                site_dir: "site",
+               site_dir: Pathname("../what-problem-does-it-solve.com/site").expand_path / "serverless",
                   title: "Serverless and Functions-as-a-Service",
                subtitle: "Don't believe the hype—understand it",
                  author: "David Bryant Copeland AKA @davetron5000"

@@ -1,6 +1,6 @@
 $system-font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 
-$system-monospace: courier, monospace;
+$system-monospace: "Lucida Console", "Monaco", monospace;
 
 // Sizing
 $chars-per-line: 75;
@@ -50,7 +50,7 @@ $sz5: $body-font-size * $line-height / 8; //  3.15px
 }
 
 @mixin code-font {
-  font-family: courier, monospace;
+  font-family: $system-monospace;
   text-rendering: optimizeLegibility;
 }
 

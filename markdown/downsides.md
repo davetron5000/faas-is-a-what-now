@@ -7,10 +7,10 @@ run this in our development environment. Frameworks like [the Serverless Framewo
 this, but this is not without complexity.  Especially if you have years of battle-hardened experience writing and deploying more
 conventional web apps—you've got a learning curve ahead, and it's not gentle.
 
-It's also not clear that a moderately involved system wouldn't also be complex.  Ideally, new features (or changes) could be
-localized to one or a few functions.  This would only be true if you'd made the right choices around what functions did what, and
-set proper system boundaries.  In the case where you didn't, you would end up needing to make a lot of changes in a lot of
-functions.
+<aside class="pullquote">You've got a learning curve ahead, and it's not gentle</aside>
+
+A moderately involved system is likely also to be complex if you don't make good design choices.  Ideally, new features (or changes) could be localized to one or a few functions.  This would only be true if you'd made the right choices around what functions did what, and set proper system boundaries.  In the case where you didn't, you would end up needing to make a lot of changes in a lot of functions.
+
 
 In a monolithic system, development tools and workflows make this as simple as can be expected.  Be it text editor or IDE,
 navigating around a codebase is a well-solved problem.  When your codebase is now spread over many disparate functions,
@@ -133,7 +133,7 @@ Our unit test will fail:
 
 !SH node js/renderPageTest.js
 
-But, we can fix it by changing the param name we pass in
+But, we can fix it by changing the param name we use in the test:
 
 !EDIT_FILE js/renderPageTest.js /* */
 {
@@ -148,7 +148,7 @@ Now, our tests pass again:
 
 !SH node js/renderPageTest.js
 
-But, our system is horribly broken.  Without a system test, we might not even know that things aren't working.
+But, our system is horribly broken, since the HTML page is still submitting `email` as the parameter name.  Without a system test, we might not even know that things aren't working.
 
 ## System Testing for Faas is Not Yet a Thing
 
@@ -157,9 +157,9 @@ It's hard to blame them, because this is hard.  It's hard for microservices, and
 is where a tightly-integrated, monolithic system actually shines.  You actually *can* stand up the world and run tests against
 it.
 
-The way this is solved in a microservices-based architecture is to use _consumer-driven-contracts_.  A consumer-driven contract
+The way this is solved in a microservices-based architecture is to use [_consumer-driven-contracts_](https://martinfowler.com/articles/consumerDrivenContracts.html).  A consumer-driven contract
 allows the consumer of a microservice to record assertions about how it expects that service to behave.  For example, we might
-send a `GET` request to `payments.example.com/credit_cards/42` to get user 42's payment details and expect some JSON back.  As a consumer of `payments.example.com`, we'd record that, when we submit that request, we expect a certain response that matches a certain format:
+send a `GET` request to `payments.example.com/credit_cards/42` to get user 42's payment details and expect some JSON back.  As a consumer of `payments.example.com`, we'd record that when we submit that request, we expect a certain response that matches a certain format:
 
 ```json
 {

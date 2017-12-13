@@ -4,12 +4,12 @@ about in the last chapter.
 
 What is the analog in our event-sourced, functions-as-a-service, serverless world?
 
-Since all activity is based on messages, and our functions are triggered based on messages, we'd use bonafide messages as test
-inputs.  For functions that also *send* messages, we'd like to capture those messages to use as test data.
+Since all activity is based on messages, and our functions are triggered based on messages, we could use bonafide messages as test
+inputs.  For functions that also *send* messages, we'd like to capture those messages to use as test data for other functions.
 
-In the previous section we broke our system by changing the format of the message the `renderPage` function received.
+In the previous section we broke our system by changing the format of the message that `renderPage` received.
 
-Let's change how we test to be more message focused.  We'll start by using the documented messages and payloads as input to our
+Let's change how we test to be more message-focused.  We'll start by using the documented messages and payloads as input to our
 tests, rather than hand-coding them.
 
 ## Output of One is Input to Another
