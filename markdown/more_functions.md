@@ -59,7 +59,7 @@ message.
 }
 !END EDIT_FILE
 
-Now, we'll replace `js/app.js` with a version that handles the POST. Because we'll need more code, let's break it up into some functions.  We'll create a functional called `renderPage` that accepts the `write` function `js/server.js` gives us, as well as the parsed params (which could be `null`).  This function's job is to replace the HTML template with dynamic data, so it'll look at `params` and, if there is a `params.email`, replace the newly-introduced `##email##` placeholder with that email.  Otherwise, it replaces it with the empty string.
+Now, we'll replace `js/app.js` with a version that handles the POST. Because we'll need more code, let's break it up into some functions.  We'll create a function called `renderPage` that accepts the `write` function `js/server.js` gives us, as well as the parsed params (which could be `null`).  This function's job is to replace the HTML template with dynamic data, so it'll look at `params` and, if there is a `params.email`, replace the newly-introduced `##email##` placeholder with that email.  Otherwise, it replaces it with the empty string.
 
 We'll *also* make a function called `emailSignup` that, currently, just logs that someone has requested a signup, and then defers
 to `renderPage`.  At the very end we'll call either `emailSignup` or `renderPage`, depending on if we have a parsed body from
@@ -399,7 +399,7 @@ Here are the code changes to make that happen:
 !END EDIT_FILE
 
 With these pieces, `js/app.js` becomes not much more than configuration.  We need to register the functions we just created as
-receivers for some events.  One event is `newEmailAddress`, which we have the `Database` firing.  The other two events we'll fir
+receivers for some events.  One event is `newEmailAddress`, which we have the `Database` firing.  The other two events we'll fire
 inside `js/app.js` as well:
 
 !CREATE_FILE js/app.js
@@ -448,7 +448,7 @@ easier to understand.
 * We no longer have to mess with background jobs.
 
 This does have a big downside, which is that it's now pretty difficult to piece together what happens when a user submits their
-email addressto us.  *But*, I'd argue that from the configuration that is now inside `js/app.js`, this information could be
+email address to us.  *But*, I'd argue that from the configuration that is now inside `js/app.js`, this information could be
 mechanically derived.
 
 So, what about serverless architecture and FaaS?

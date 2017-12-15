@@ -276,8 +276,8 @@ expectations of the various functions and what they do.
 
 You could imagine taking the above concept to the next level by having a central database of messages, and a registry of
 functions that send those messages along with those that expect to receive them.  It would then be possible to examine this
-registory to see if anything broke.  For example, if we'd made the change to `Database` above under such a sytem, we could
-include, as part of our CI process, a step that asks the central registory “Will this updated payload break any registered
+registry to see if anything broke.  For example, if we'd made the change to `Database` above under such a system, we could
+include, as part of our CI process, a step that asks the central registry “Will this updated payload break any registered
 consumers?”.
 
 Such a system could also monitor *all* messages and, armed with the knowledge of who is expecting what from whom, indicate if an

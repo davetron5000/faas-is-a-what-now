@@ -53,7 +53,7 @@ smaller footprint.
 
 Consider if our tiny application was implemented as an MVC-style web framework.  We would need to have visibility into the
 behavior of every piece of the framework as described in the above diagram. To understand how our application performs, we have
-to examine both the our code and the framework code.  If you've used an Application Performance Monitoring (APM) tool like New Relic, you know how complex this can be, especially if your web framework or programming language doesn't have a lot of hooks for it
+to examine both our code and the framework code.  If you've used an Application Performance Monitoring (APM) tool like New Relic, you know how complex this can be, especially if your web framework or programming language doesn't have a lot of hooks for it
 to instrument.
 
 You end up having to litter your code with stuff like this:
@@ -135,7 +135,7 @@ adapter, the best email subsystem, the best HTML rendering engine for the proble
 web application benefits greatly from an integrated framework, our “free functions” don't, so we can use different
 libraries if it's warranted.
 * To change any given function, we only have to deploy that function.  We don't need to run a test suite of the
-entire system just to deploy a change to one component.  As long as our functions confirm to the protocol, we are
+entire system just to deploy a change to one component.  As long as our functions conform to the protocol, we are
 good (this is not without downsides, which we'll get to in a later chapter).
 
 There are theoretical cost benefits, too.  Our function that renders HTML likely gets called a lot, but our function that sends

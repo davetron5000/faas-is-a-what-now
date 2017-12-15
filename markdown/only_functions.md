@@ -1,5 +1,5 @@
 Let's keep going with our budding event-based architecture.  Suppose that both `js/server.js` and the event bus are provided to
-us for us by our cloud services provider.  Suppose our provider guarantees it will fire a `get` or `post` event when someone
+us by our cloud services provider.  Suppose our provider guarantees it will fire a `get` or `post` event when someone
 makes an HTTP request to a server it's running on our behalf.  We could then imagine that our entire system is describable by a configuration file:
 
 !CREATE_FILE js/app.js
@@ -23,11 +23,11 @@ module.exports = {
 }
 !END CREATE_FILE
 
-To keep our example actually executable locally, we'll modify `js/servier.js` to read our new `js/app.js`.  Just remember, the
+To keep our example actually executable locally, we'll modify `js/server.js` to read our new `js/app.js`.  Just remember, the
 idea is that our cloud services provider would handle this plumbing and we'd simply provide `js/app.js`, so bear with me.
 
 To mimic what our cloud services provider would do, we'll iterate over the configuration from `js/app.js` and connect events and
-listeners and firing those events to the listeners at the right time.
+listeners and fire those events to the listeners at the right time.
 
 !EDIT_FILE js/server.js /* */
 {
@@ -113,7 +113,7 @@ const addEmailToDataWarehouse = (data) => {
 module.exports = addEmailToDataWarehouse;
 !END CREATE_FILE
 
-We can hook that into our system by adding it to the configureation in js/app.js:
+We can hook that into our system by adding it to the configuration in js/app.js:
 
 !EDIT_FILE js/app.js /* */
 {

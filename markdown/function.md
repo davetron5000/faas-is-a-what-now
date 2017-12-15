@@ -175,7 +175,7 @@ Meanwhile, *our* code has no knowledge of the fact that it's run in a web server
 
 But consider how you'd maintain and evolve this system.  As we just saw, we made changes to the code and had to re-run everything
 to make sure it still worked.  It would be better to have an automated test.  To test our system as it stands, we'd need a unit
-test of `js/app.js`, and a system test that running `node js/server.js` properly rendered teh web page.
+test of `js/app.js`, and a system test that running `node js/server.js` properly rendered the web page.
 
 If, instead, *we* didn't have to worry about `js/server.js`, that's a big piece of the system not to have to worry about.
 Instead, we assume someone else provides `js/server.js` and, as long as our exported function conforms to a known protocol, we're
