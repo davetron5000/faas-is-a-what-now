@@ -393,7 +393,11 @@ Here are the code changes to make that happen:
 {
   "match": "    return id;",
   "insert_before": [
-    "    EventBus.fire(\"newEmailAddress\",{ email: { action: \"created\", data: { id: id, email: email }}});"
+    "    EventBus.fire(\"newEmailAddress\",",
+    "                  {",
+    "                    mail: { action: \"created\",",
+    "                    data: { id: id, email: email }}",
+    "                  });"
   ]
 }
 !END EDIT_FILE

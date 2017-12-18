@@ -71,7 +71,7 @@ if (found) {
   console.log("✅ storeInDatabase is good");
 }
 else {
-  console.log("🚫 storeInDatabase is broken: Didn't save pat@example.com");
+  console.log("🚫 storeInDatabase didn't save pat@example.com");
 }
 !END CREATE_FILE
 
@@ -96,7 +96,7 @@ if (emailMailed === "pat@example.com") {
   console.log("✅ sendWelcomeEmail is good");
 }
 else {
-  console.log(`🚫 sendWelcomeEmail is failed.  Expected pat@example.com, got ${emailMailed}`);
+  console.log(`🚫 sendWelcomeEmail expected pat@example.com, got ${emailMailed}`);
 }
 !END CREATE_FILE
 
@@ -123,7 +123,8 @@ expect the key to be `emailAddress`:
 {
   "match": "    html = html.replace(\"##email##\",`Thanks ${params.body.email}`);",
   "replace_with": [
-    "    html = html.replace(\"##email##\",`Thanks ${params.body.emailAddress}`);"
+    "    html = html.replace(\"##email##\",",
+    "                        `Thanks ${params.body.emailAddress}`);"
   ]
 
 }
