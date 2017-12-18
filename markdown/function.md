@@ -14,7 +14,7 @@ just dumping a static page.  In this case, we'll invent a simple templating synt
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>The Serverless Compendium</title>
+    <title>The Serverless Compedium</title>
   </head>
   <body>
     <h1>The Serverless Compendium</h1>

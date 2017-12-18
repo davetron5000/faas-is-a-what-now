@@ -108,7 +108,7 @@ First, we'll define a new function in `js/emailDeepLearning.js` that can be noti
 !CREATE_FILE js/emailDeepLearning.js
 const addEmailToDataWarehouse = (data) => {
   const emailData = data["email"]["data"];
-  console.log(`Storing ${JSON.stringify(emailData)} in our data warehouse!');
+  console.log(`Storing ${JSON.stringify(emailData)} in our data warehouse for some deep learning!`);
 }
 module.exports = addEmailToDataWarehouse;
 !END CREATE_FILE

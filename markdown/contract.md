@@ -70,11 +70,8 @@ fs.readdirSync(testMessagesPath).forEach(file => {
 });
 
 
-EventTestCatalog.events["get"]  = 
-  EventTestCatalog.events["pageRequested"];
-
-EventTestCatalog.events["post"] = 
-  EventTestCatalog.events["emailSignup"];
+EventTestCatalog.events["get"] = EventTestCatalog.events["pageRequested"];
+EventTestCatalog.events["post"] = EventTestCatalog.events["emailSignup"];
 
 module.exports = EventTestCatalog;
 !END CREATE_FILE
@@ -115,7 +112,7 @@ events.forEach( (eventName) => {
     console.log(`✅ given ${eventName}, renderPage is good`);
   }
   catch (exception) {
-    console.log(`🚫 given ${eventName}, renderPage: ${exception}`);
+    console.log(`🚫 given ${eventName}, renderPage is broken: ${exception}`);
   }
 });
 !END CREATE_FILE
@@ -137,9 +134,9 @@ A brief investigation shows that we're expecting the key `emailSignup` and not t
   ]
 },
 {
-  "match": "                        `Thanks ${params.body.emailAddress}`);",
+  "match": "    html = html.replace(\"##email##\",`Thanks ${params.body.emailAddress}`);",
   "replace_with": [
-    "                        `Thanks ${params.body.email}`);"
+    "    html = html.replace(\"##email##\",`Thanks ${params.body.email}`);"
   ]
 }
 !END EDIT_FILE
@@ -171,7 +168,7 @@ if (emailMailed === "pat@example.com") {
   console.log("✅ sendWelcomeEmail is good");
 }
 else {
-  console.log(`🚫 sendWelcomeEmail expected pat@example.com, got ${emailMailed}`);
+  console.log(`🚫 sendWelcomeEmail is failed.  Expected pat@example.com, got ${emailMailed}`);
 }
 !END CREATE_FILE
 
@@ -190,8 +187,7 @@ First, we'll add a function to `EventTestCatalog` to allow saving new message pa
   "replace_with": [
     "  events: {},",
     "  saveEvent: (name,body) => {",
-    "    fs.writeFileSync(path.resolve(testMessagesPath,`${name}.json`),",
-    "                     JSON.stringify(body,null,2));",
+    "    fs.writeFileSync(path.resolve(testMessagesPath,`${name}.json`),JSON.stringify(body,null,2))",
     "  }"
   ]
 
@@ -251,9 +247,9 @@ So far so good.   Now, let's say the database changes its payload format for the
 
 !EDIT_FILE js/Database.js /* */
 {
-  "match": "                    data: { id: id, email: email }}",
+  "match": "    EventBus.fire(\"newEmailAddress\",{ email: { action: \"created\", data: { id: id, email: email }}});",
   "replace_with": [
-    "                    data: { id: id, emailAddress: email }}"
+    "    EventBus.fire(\"newEmailAddress\",{ email: { action: \"created\", data: { id: id, emailAddress: email }}});"
   ]
 }
 !END EDIT_FILE
