@@ -29,6 +29,8 @@ task :default do
   builder.build(book)
 end
 
+task :clean_build => [ :clean, :default ]
+
 task :serve do
   WEBrick::HTTPServer.new(:Port => 8000, :DocumentRoot => Pathname(Dir.pwd) / "site").start
 end
