@@ -5,7 +5,7 @@ Georgia, falling back to  the system serif font.
 
 Code is set in Monaco or Lucida Console, depending on your operating system, with syntax highlighting provided by [highlight.js](https://highlightjs.org).
 
-Thanks for reading!
+Thanks for reading, and check out other entires in [“What Problem Does it Solve?”](/)
 
 <aside class="signoff">
 Dave <code>davec@naildrivin5.com</code>

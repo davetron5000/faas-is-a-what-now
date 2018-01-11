@@ -274,6 +274,8 @@ What this demonstrates is that it's possible to create a system based on events 
 how we write tests, we can achieve the level of confidence we'd get from an end-to-end test by keeping track of the messages and
 expectations of the various functions and what they do.
 
+!AD "Systems Thinking" "Tame the small things to focus on big things" http://bit.ly/dcsweng "Buy Now $25" http://full-stack-rails.com/sweng-cover.png
+
 You could imagine taking the above concept to the next level by having a central database of messages, and a registry of
 functions that send those messages along with those that expect to receive them.  It would then be possible to examine this
 registry to see if anything broke.  For example, if we'd made the change to `Database` above under such a system, we could

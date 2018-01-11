@@ -173,6 +173,8 @@ page, and we could use `js/server.js` with pretty much any function.
 
 Meanwhile, *our* code has no knowledge of the fact that it's run in a web server.  It's just rendering strings.  So far, this is basic separation of concerns.
 
+!AD "Think Broadly" "Learn how to solve bigger problems" http://bit.ly/dcsweng "Buy Now $25" http://full-stack-rails.com/sweng-cover.png
+
 But consider how you'd maintain and evolve this system.  As we just saw, we made changes to the code and had to re-run everything
 to make sure it still worked.  It would be better to have an automated test.  To test our system as it stands, we'd need a unit
 test of `js/app.js`, and a system test that running `node js/server.js` properly rendered the web page.

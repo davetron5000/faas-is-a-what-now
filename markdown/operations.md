@@ -124,6 +124,8 @@ digraph faas {
 
 We're still using the same general components, but a few things are different:
 
+!AD "Build Systems & Teams" "Act more broadly and have a big impact" http://bit.ly/dcsweng "Buy Now $25" http://full-stack-rails.com/sweng-cover.png
+
 * Monitoring our system becomes monitoring each function independently.  We don't need to add custom tracing in
 our code because it's naturally separated as deployable functions, and our cloud hosting provider can provide
 APM-style insights.

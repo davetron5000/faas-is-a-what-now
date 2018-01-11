@@ -9,7 +9,7 @@ const sendWelcomeEmail = require("./sendWelcomeEmail.js");
 
 module.exports = {
   "get": "pageRequested", // fire pageRequested if get is fired
-  "post": "emailSignup",  // fire emailSignup is post is fired
+  "post": "emailSignup",  // fire emailSignup if post is fired
   "emailSignup": [
     storeInDatabase, // if emailSignup is fired, call storeInDatabase
     renderPage,      // if emailSignup is fired, ALSO call renderPage
